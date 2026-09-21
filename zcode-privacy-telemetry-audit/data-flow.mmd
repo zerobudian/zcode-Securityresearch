@@ -1,0 +1,36 @@
+flowchart TD
+    subgraph LOCAL["Local computer"]
+        WS["Workspace files / .git / secrets / terminal"]
+        ATT["Attachments (local paths)"]
+        CB["Context Builder / agent loop"]
+        TELE["Product telemetry (event + ARMS)"]
+        FB["Feedback form + attachments"]
+        STORE["Local stores: ~/.zcode/v2 sessions, logs, checkpoints, telemetry-state.json"]
+        COOK["Browser / remote runtime & local server"]
+    end
+
+    subgraph ZCS["ZCode service (default https://zcode.z.ai — ZCODE_BASE_URL override)"]
+        API["/api/v1 APIs: inference, configs, off-peak, mcp/usage, share, oauth"]
+        CRED["/feedback/attachment/upload-credential"]
+    end
+
+    MP["Model provider(s) — e.g. bigmodel.cn"]
+    SINK["Telemetry sink (ARMS / event report — env-resolved)"]
+    OSS["Object storage (OSS)"]
+
+    WS --> CB
+    CB -->|"task context (selected, not whole repo)"| API
+    API --> MP
+    TELE -->|"sanitized events, env endpoint"| SINK
+    ATT -->|"local path: ZERO upload; pasted dataBase64: put"| API
+    FB --> CRED
+    CRED -->|"credential {oss.host,x-oss-*,max_size,callback}"| OSS
+
+    COOK -->|"embedded browser / remote"| ZCS
+    STORE --> CB
+    STORE --> TELE
+
+    style OSS fill:#ffe9e9
+    style SINK fill:#ffe9e9
+    style MP fill:#e9f0ff
+    style API fill:#e9f0ff

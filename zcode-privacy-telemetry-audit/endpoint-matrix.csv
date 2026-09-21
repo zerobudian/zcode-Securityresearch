@@ -1,0 +1,15 @@
+endpoint,method,trigger,data,auth,automatic,disable,evidence
+ZCODE_TELEMETRY_REPORT_ENDPOINT (env),POST,launch/daily-active/session/agent events,telemetry event (sanitized) + ids,account/user_id,true,clear env,EVID-TELEMETRY-001
+ZCODE_ARMS_RUM_ENDPOINT (env),POST,app start,RUM/perf/errors/devicemid,none,true,clear env,EVID-TELEMETRY-002
+https://zcode.z.ai/api/v1 (default; ZCODE_BASE_URL override),REST,inference & product APIs,conversation/tool context ,account,true,model off / self-host baseURL,EVID-TELEMETRY-007
+{origin}/api/v1/client/configs,GET,provider config load,none,yes,true,—,EVID-TELEMETRY-007
+{origin}/api/v1/off-peak*,per API,background/off-peak task,session/task payload,account,true,—,—
+{origin}/api/v1/mcp/usage,GET,MCP runtime start,quota,identity headers,true,—,—
+{origin}/feedback/attachment/upload-credential,POST,user attaches file to feedback,ticket/message/file meta,session,false,skip,EVID-ATTACHMENT-002
+credential.oss.host (server-issued),POST,after credential,multipart file + x-oss-* fields,OSS signature,false,abort,EVID-ATTACHMENT-002
+https://chat.z.ai/api/oauth/authorize + token,GET/POST,user login,OAuth code/token,OAuth,false,logout,EVID-TELEMETRY-004
+{origin}/shares/{code}/preview,GET,open share link,none (public),none,true,—,—
+https://api.z.ai business,per API,business-named auth,auth,refresh token,true,logout,—
+https://zcode.z.ai/docs,GET,help docs,none,none,false,—,—
+ZCODE_REMOTE_ASSET_CDN_BASE_URL,GET,asset load,static assets,none,true,env,—
+localhost /api/server-info etc.,GET/POST,local server runtime,local,none,false,local only,EVID-SESSION-001
